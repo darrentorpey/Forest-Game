@@ -134,9 +134,11 @@ function go() {
     gbox.trashGroup("sparks");
     gbox.trashGroup("bonus");
     gbox.trashGroup("ghosts");
+    PLANT_MANAGER.reset();
     gbox.purgeGarbage(); // the gbox module have a garbage collector that runs sometime. Let's call this manually, for optimization (and better reinitialization)
     maingame.bullettimer=0; // Reset the bullettimer, so the game can continue normally.
     toys.topview.spawn(gbox.getObject("player","capman"),{x:maze.hw-6,y:maze.hh+50,accx:0,accy:0,xpushing:false,ypushing:false}); // Our "capman" object into the "player" group spawns in the middle of the maze every time it spawns.
+
     add_ghost({ id: 1, x: 10, y: 1 });
     add_ghost({ id: 2, x: maze.w - 20, y: 1 });
     add_plant({ id: 1, x: maze.w - 20, y: maze.hh + 5 }); 

@@ -45,6 +45,10 @@ var CAP_MAN = {
       if (gbox.keyIsHit("a")) {
         maingame.addBonus({ bonusid: maingame.hud.getValue('bonus', 'value').length });
         this.stilltimer = 5;
+      } else if (gbox.keyIsHit("b")) {
+        var capman=gbox.getObject("player","capman"); // As usual, first we pick our capman object...
+        maingame.bullettimer=10; // ...stop the game for a while.
+        capman.kill(); // ...kill capman. "kill" is the custom method we've created into the capman object.
       }
     }
 

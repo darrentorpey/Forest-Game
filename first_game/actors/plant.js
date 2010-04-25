@@ -2,7 +2,7 @@ PLANT_MANAGER = {
   left_plants: [],
   right_plants: [],
 
-  left_base: { x: 72, y: 90 - 6 },
+  left_base: { x: 72, y: 64 },
 
   add_left_plant: function() {
     var id = this.left_plants.length + 1;
@@ -10,6 +10,11 @@ PLANT_MANAGER = {
     var y = this.left_base.y;
     add_plant({ id: id, x: x, y: y });
     this.left_plants.push({ x: x, y: y });
+  },
+
+  reset: function() {
+    this.left_plants = [];
+    gbox.trashGroup("plants");
   }
 }
 

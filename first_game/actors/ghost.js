@@ -214,6 +214,12 @@ function add_ghost(data) {
 
         // Then... let's bug capman a bit
         var capman=gbox.getObject("player","capman"); // As usual, first we pick our capman object...
+        var ghost2=gbox.getObject("ghosts","ghost2");
+        if (this.status=="chase" && this != ghost2 && gbox.collides(this, ghost2)) {
+          console.log("HIT!");
+          maingame.bullettimer=10; // ...stop the game for a while.
+          capman.kill(); // ...kill capman. "kill" is the custom method we've created into the capman object.
+        }
         /*if (gbox.collides(this,capman,2)) { // If we're colliding with capman, with a tollerance of 2 pixels...
           if (this.status=="chase") { // and we're hunting him...
             maingame.bullettimer=10; // ...stop the game for a while.
