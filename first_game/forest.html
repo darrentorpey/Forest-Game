@@ -212,8 +212,7 @@ function go() {
     add_ghost({ id: 3, x: maze.hw + 4,  y: maze.hh - 20 });
     add_ghost({ id: 4, x: maze.hw + 14, y: maze.hh - 17 });
     add_plant({ id: 11, x: maze.hw + 14, y: maze.hh - 17 });
-    // maingame.hud.setWidget('pla
-    nt_label1', { widget: 'label', font: 'small', value: '%', dx: 0, dw: gbox.getScreenW() - 5, dy: gbox.getScreenH() - 55, halign:gbox.ALIGN_RIGHT, clear:true });
+    // maingame.hud.setWidget('plant_label1', { widget: 'label', font: 'small', value: '%', dx: 0, dw: gbox.getScreenW() - 5, dy: gbox.getScreenH() - 55, halign:gbox.ALIGN_RIGHT, clear:true });
     if (this.bonustimer) this.bonustimer=300; // The timer is reset after spawning a new life, if the bouns is not appeared. As I said before, We well talk about this counter at the end.
   }
 
