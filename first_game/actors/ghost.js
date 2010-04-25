@@ -1,8 +1,9 @@
+GHOSTS = [];
 function add_ghost(data) {
   // Let's start with something that spawn a ghost. Objects as arguments are not only flexible,
   // but you can give a name to the parameters or skipping them when calling.
   // Ghosts are objects too, like capman.
-  gbox.addObject({
+  GHOSTS.push(gbox.addObject({
     ghostid:data.id, // We will give a number to each ghost, since their behaviour is quite similiar, with some exception I'll explain. Let's store this id here.
     id:"ghost"+data.id, // The object name is derived from the passed ID. So, addGhost({id:1}); will generate a "ghost1" object.
     group:"ghosts", // Ghosts are all on their group
@@ -215,10 +216,23 @@ function add_ghost(data) {
         // Then... let's bug capman a bit
         var capman=gbox.getObject("player","capman"); // As usual, first we pick our capman object...
         var ghost2=gbox.getObject("ghosts","ghost2");
+        var plant = gbox.getObject("plants","1");
+        var plants = gbox._objects['plants'];
         if (this.status=="chase" && this != ghost2 && gbox.collides(this, ghost2)) {
           console.log("HIT!");
           maingame.bullettimer=10; // ...stop the game for a while.
           capman.kill(); // ...kill capman. "kill" is the custom method we've created into the capman object.
+        // } else if (this.status == 'chase' && gbox.collides(this, plant)) {
+          // console.log('swap');
+          // this.swap();
+        } else {
+          for (plant_id in plants) {
+            var plant = plants[plant_id];
+            if (this.status == 'chase' && gbox.collides(this, plant)) {
+              console.log('swapping');
+              this.swap();
+            }
+          }
         }
         /*if (gbox.collides(this,capman,2)) { // If we're colliding with capman, with a tollerance of 2 pixels...
           if (this.status=="chase") { // and we're hunting him...
@@ -246,6 +260,26 @@ function add_ghost(data) {
 
     blit:function() { // In the blit phase, we're going to render the ghost on the screen, just like capman.
       gbox.blitTile(gbox.getBufferContext(),{tileset:this.tileset,tile:this.frame,dx:this.x,dy:this.y,fliph:this.fliph,flipv:this.flipv,camera:this.camera,alpha:1});
+    },
+
+    swap: function() {
+      if (this.facing == toys.FACE_RIGHT) {
+        toys.topview.controlKeys(this,{pressleft: 1});
+      } else {
+        toys.topview.controlKeys(this,{pressright: 1});
+      }
+      
+      // if ((this.facing==toys.FACE_UP)||(this.facing==toys.FACE_DOWN)) { // thiss can't go in their opposite direction, so if we're moving horizontally, the next move is vertical and vice versa.
+      //   if (this.facing==toys.FACE_UP) // is on my right?
+      //     toys.topview.controlKeys(this,{pressright:1}); //  Let's move right.
+      //   else // on my left?
+      //     toys.topview.controlKeys(this,{pressleft:1}); //  Let's move left.
+      // } else {
+      //   if (this.facing==toys.FACE_LEFT) // is under me?
+      //     toys.topview.controlKeys(this,{pressdown:1}); //  Let's move down.
+      //   else// is over me?
+      //     toys.topview.controlKeys(this,{pressup:1}); //  Let's move up.
+      // }     
     }
-  });
+  }));
 }

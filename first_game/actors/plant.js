@@ -9,7 +9,7 @@ PLANT_MANAGER = {
     var x = this.left_base.x + 12 * (id - 1);
     var y = this.left_base.y;
     add_plant({ id: id, x: x, y: y });
-    this.left_plants.push({ x: x, y: y });
+    this.left_plants.push({ x: x, y: y, id: id });
   },
 
   reset: function() {
@@ -18,8 +18,17 @@ PLANT_MANAGER = {
   },
   
   update: function() {
-    // if (!this.timeTilPlant)
-    // PLANT_MANAGER.add_left_plant();
+    // this.left_plants
+    
+    var plants = gbox._objects['plants'];
+
+    for (plant_id in plants) {
+      var plant = plants[plant_id];
+      plant.health_level--;
+      if (plant.health_level <= 0) {
+        gbox.trashObject(plant);
+      }
+    }
   }
 }
 
@@ -28,7 +37,7 @@ function add_plant(data) {
     id: data.id,
     group: 'plants',
     tileset: 'plant',
-    health_level: 1,
+    health_level: 150,
 
     initialize:function() { // From now, go back to the capman object for what I'm not commenting. You're getting better, so let's make the things harder :)
       toys.topview.initialize(this,{

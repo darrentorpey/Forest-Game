@@ -55,6 +55,10 @@ var CAP_MAN = {
         var capman=gbox.getObject("player","capman"); // As usual, first we pick our capman object...
         maingame.bullettimer=10; // ...stop the game for a while.
         capman.kill(); // ...kill capman. "kill" is the custom method we've created into the capman object.
+      } else if (gbox.keyIsHit('c')) {
+        // var ghost = GHOSTS[0];
+        //toys.topview.controlKeys(ghost,{pressleft:1});
+        // ghost.swap();
       }
     }
 
