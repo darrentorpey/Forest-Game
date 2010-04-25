@@ -9,13 +9,26 @@
   <script type="text/javascript" src="akihabara/gamecycle.js"></script>
   <style>BODY { -webkit-user-select:none; margin:0px}</style>
   <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" />
+  <script type="text/javascript" src="lib/global.js"></script>
+  <script type="text/javascript" charset="utf-8">
+    // ################
+    // GLOBAL VARIABLES
+    // ================
+    GROW_BLUE_RATE = 3; // Lower is faster
+    BLUE_PATH = 11;
+    BLUE_TILE = 12;
+  </script>
   <script type="text/javascript" src="actors/cap_man.js"></script>
   <script type="text/javascript" src="actors/ghost.js"></script>
   <script type="text/javascript" src="actors/plant.js"></script>
+
+  <script type="text/javascript" src="blue.js"></script>
+
+  <script type="text/javascript" src="levels/map.js"></script>
 </head>
 <body>
 </body>
-<script>
+<script type="text/javascript" charset="utf-8">
 // ---
 // Copyright (c) 2010 Francesco Cottone, http://www.kesiev.com/
 // Copyright (c) 2010 Darren Torpey, http://www.darrentorpey.com/
@@ -67,8 +80,8 @@ function go() {
 
   maingame.bullettimer = 0; // Maingame is a javascript object, so it can host any kind of variable, like our "bullet timer". Keeps the game still for a while, that happens when eating a ghost or when being eated ;)
 
-  if (gbox.dataLoad("capman-hiscore")===null) // We will keep the highscores too. So, if there is any highscore saved...
-    gbox.dataSave("capman-hiscore",100); // ... we will put a "100 points" hiscore.
+  if (gbox.dataLoad('capman-hiscore') === null) // We will keep the highscores too. So, if there is any highscore saved...
+    gbox.dataSave('capman-hiscore', 100); // ... we will put a "100 points" hiscore.
 
    // This method is called every new level. That is called also for the first level, so...
   maingame.changeLevel=function(level) {
@@ -78,83 +91,19 @@ function go() {
       maingame.level=level; // "maingame" is handy enough to store some game data.
       maingame.hud.setValue("stage","value","STAGE "+level); // Put on the screen the stage name (I'll explain what the "hud" is in the "initializeGame" function)
 
-
     // Let's prepare the maze map now. Every stage is the same level but you can generate a new level each "changeLevel" call, using the "level" argument value.
     // This is just an array with the tile id or NULL for an empty transparent space.
     maze=help.finalizeTilemap({ // finalizeTilemap does some magic to the maze object: calculate real width/height of the map in pixels and values the "h" and "w" property.
-      tileset:"maze", // This is the tileset used for rendering the map.
-      map:help.asciiArtToMap([ // Hey, wait! This is an ascii art of the map? Yes! "asciiArtToMap" convers an array of string in an array of arrays, using...
-
-      "||T----------------------------------------------------TxxT----------------------------------------------------T||",
-      "||||                                                  ||xx||                                                  ||||",
-      "||||   .   .   .   .   .   .   .   .   .   .   .   .  ||xx||   .   .   .   .   .   .   .   .   .   .   .   .  ||||",
-      "||||                                                  ||xx||                                                  ||||",
-      "||||   .  T------------T   .  T----------------T   .  ||xx||   .  T----------------T   .  T------------T   .  ||||",
-      "||||      ||xxxxxxxxxx||      ||xxxxxxxxxxxxxx||      ||xx||      ||xxxxxxxxxxxxxx||      ||xxxxxxxxxx||      ||||",
-      "||||   o  ||xxxxxxxxxx||   .  ||xxxxxxxxxxxxxx||   .  ||xx||   .  ||xxxxxxxxxxxxxx||   .  ||xxxxxxxxxx||   o  ||||",
-      "||||      ||xxxxxxxxxx||      ||xxxxxxxxxxxxxx||      ||xx||      ||xxxxxxxxxxxxxx||      ||xxxxxxxxxx||      ||||",
-      "||||   .  L------------J   .  L----------------J   .  L----J   .  L----------------J   .  L------------J   .  ||||",
-      "||||                                                                                                          ||||",
-      "||||   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .  ||||",
-      "||||                                                                                                          ||||",
-      "||||   .  T------------T   .  T----T   .  T----------------------------T   .  T----T   .  T------------T   .  ||||",
-      "||||      ||xxxxxxxxxx||      ||xx||      ||xxxxxxxxxxxxxxxxxxxxxxxxxx||      ||xx||      ||xxxxxxxxxx||      ||||",
-      "||||   .  L------------J   .  ||xx||   .  L------------TxxT------------J   .  ||xx||   .  L------------J   .  ||||",
-      "||||                          ||xx||                  ||xx||                  ||xx||                          ||||",
-      "||||   .   .   .   .   .   .  ||xx||   .   .   .   .  ||xx||   .   .   .   .  ||xx||   .   .   .   .   .   .  ||||",
-      "||||                          ||xx||                  ||xx||                  ||xx||                          ||||",
-      "||L--------------------T   .  ||xxL------------T      ||xx||      T------------Jxx||   .  T--------------------J||",
-      "L--------------------T||      ||xxxxxxxxxxxxxx||      ||xx||      ||xxxxxxxxxxxxxx||      ||T--------------------J",
-      "                    ||||   .  ||xxT------------J      L----J      L------------Txx||   .  ||||                    ",
-      "                    ||||      ||xx||                                          ||xx||      ||||                    ",
-      "                    ||||   .  ||xx||                                          ||xx||   .  ||||                    ",
-      "                    ||||      ||xx||                                          ||xx||      ||||                    ",
-      "                    ||||   .  ||xx||      T---------~~~~~~~~~~---------T      ||xx||   .  ||||                    ",
-      "---------------------J||      ||xx||      ||                          ||      ||xx||      ||L---------------------",
-      "-----------------------J   .  L----J      ||                          ||      L----J   .  L-----------------------",
-      "                                          ||                          ||                                          ",
-      "                           .              ||                          ||               .                          ",
-      "                                          ||                          ||                                          ",
-      "------------------------------------------||                          ||------------------------------------------",
-      "                                          ||                          ||                                          ",
-      "                                          L----------------------------J                                          ",
-      "                                                                                                                  ",
-      "                                                                                                                  ",
-      "T----------------------------------------------------------------------------------------------------------------T",
-      "||T----------------------------------------------------TxxT----------------------------------------------------T||",
-      "||||                                                  ||xx||                                                  ||||",
-      "||||  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  ||xx||   .   .   .   .   .   .   .   .   .   .   .   .  ||||",
-      "||||                                                  ||xx||                                                  ||||",
-      "||||   .  T------------T   .  T----------------T   .  ||xx||   .  T----------------T   .  T------------T   .  ||||",
-      "||||      ||xxxxxxxxxx||      ||xxxxxxxxxxxxxx||      ||xx||      ||xxxxxxxxxxxxxx||      ||xxxxxxxxxx||      ||||",
-      "||||   .  L--------Txx||   .  L----------------J   .  L----J   .  L----------------J  >>  ||xxT--------J   .  ||||",
-      "||||              ||xx||                                                              >>  ||xx||              ||||",
-      "||||   o   .   .  ||xx||   .                                              >>>>>>>>>>>>>>  ||xx||   .   .   o  ||||",
-      "||||              ||xx||                                                  >>          >>  ||xx||              ||||",
-      "||L--------T   .  ||xx||   .  T----T   .  T----------------------------T  >>  T----T  >>  ||xx||   .  T--------J||",
-      "||xxxxxxxx||      ||xx||      ||xx||      ||xxxxxxxxxxxxxxxxxxxxxxxxxx||  >>  ||xx||      ||xx||      ||xxxxxxxx||",
-      "||T--------J   .  L----J   .  ||xx||   .  L------------TxxT------------J  >>  ||xx||   .  L----J   .  L--------T||",
-      "||||                          ||xx||                  ||xx||                  ||xx||                          ||||",
-      "||||   .   .   .   .   .   .  ||xx||   .   .   .   .  ||xx||  BBBBBBBBBBBBBB  ||xx||   .   .   .   .   .   .  ||||",
-      "||||                          ||xx||                  L----J  BB              ||xx||                          ||||",
-      "||||   .  T--------------------JxxL------------T   .          BB  T------------JxxL--------------------T   .  ||||",
-      "||||      ||xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx||              BB  ||xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx||      ||||",
-      "||||   .  L------------------------------------J   .          BB  L------------------------------------J   .  ||||",
-      "||||                                                  T----T  BB                                              ||||",
-      "||||   .   .   .   .   .   .   .   .   .   .   .   .  ||xx||  BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB .  ||||",
-      "||||                                                  ||xx||                                                  ||||",
-      "||L----------------------------------------------------JxxL----------------------------------------------------J||",
-      "L----------------------------------------------------------------------------------------------------------------J",
-
-      ],[[null,"  "],[0,"||"],[1,"--"],[2,"L-"],[3,"-J"],[4,"T-"],[5,"-T"],[6,"~~"],[7,"xx"],[8," ."],[9," o"],[10, "=="],[11, "BB"],[12, " +"],[13, ">>"]]), // ...this array as palette. Don't you think that a map like this is quite easy to edit and read with your on-the-go text editor?
+      tileset: 'maze',
+      map:load_map('1'),            // ...this array as palette. Don't you think that a map like this is quite easy to edit and read with your on-the-go text editor?
       tileIsSolid:function(obj,t) { // This function have to return true if the object "obj" is checking if the tile "t" is a wall, so...
-          return (t!==null)&& // Is a wall if is not an empty space and...
-              ((t<6)||    // Is a piece of wall or...
-              ((t==6)&&(obj.status!="goout")&&(obj.status!="goin"))); // The ghost's door (only if is not a ghost that is trying to go out or in)
+        return (t!==null) &&        // Is a wall if is not an empty space and...
+          ((t<6) ||                 // Is a piece of wall or...
+          ((t==6) && (obj.status!="goout") && (obj.status!="goin"))); // The ghost's door (only if is not a ghost that is trying to go out or in)
       }
     });
 
-    gbox.createCanvas("mazecanvas",{w:maze.w,h:maze.h}); // Since finalizeMap have calculated the real height and width, we can create a canvas that fits perfectly our maze... Let's call it "mazecanvas".
+    gbox.createCanvas('mazecanvas', { w: maze.w, h: maze.h }); // Since finalizeMap have calculated the real height and width, we can create a canvas that fits perfectly our maze... Let's call it "mazecanvas".
     gbox.blitTilemap(gbox.getCanvasContext("mazecanvas"),maze); // Let's paste the maze map in the "maze" object into the just created "mazecanvas". So is now ready to be rendered.
     // Then, we need to count the number of pills to eat... quite crucial, to define when the maze was cleared. Since we're lazy, we're going to cycle the map and increase a counter instead of counting them by hand.
     this.pillscount=0; // Yes. We're creating a custom counter into the "maingame" object. You can call this dirty. I call this flexibility. And relax :)
@@ -163,39 +112,20 @@ function go() {
 
     this.newLife(); // We will call the local "newLife" method, since this came displaces enemies and player every new level. Do you remember this in capman? ;)
 
-    // for (var i=0;i<gbox._tiles[maze.tileset].length;i++) {
-    //   var tile = gbox._titles[i];
-    //   console.log(tile);
-    //   if (tile) {
-    //
-    //   }
-    // }
-
-    this.blue_tiles = [];
-    for (var y=0;y<maze.map.length;y++) // Let's iterate all the rows...
+    // So that we know how many pills are in the maze...
+    var blue_tiles = [];
+    for (var y=0;y<maze.map.length;y++) { // Let's iterate all the rows...
       for (var x=0;x<maze.map[y].length;x++) { // ... and all the colums
         if (maze.map[y][x]>7) this.pillscount++; // If the row/column contains a "pill" tile (8 for plain pill, 9 for powerpill), let's increase our counter by one.
-        // console.log(maze.map[y][x]);
-        if (maze.map[y][x] == 11) {
-          this.blue_tiles.push({ x: x, y: y });
+        if (maze.map[y][x] == BLUE_TILE) {
+          blue_tiles.push({ x: x, y: y });
         }
       }
-    // So now we know how many pills are in the maze.
-    this.grow_blue();
-  }
-
-  maingame.grow_blue = function() {
-    for (tile in this.blue_tiles) {
-      var blue_tile = this.blue_tiles[tile];
-      var grow_candidate = maze.map[blue_tile.y - 2][blue_tile.x] == 13;
-      // console.log(good);
-      if (grow_candidate) {
-        // maze.map[blue_tile.y - 1][blue_tile.x] = 11;
-        help.setTileInMap(gbox.getCanvasContext("mazecanvas"), maze, blue_tile.x, blue_tile.y - 1, 11); // ... and set a null tile over that.
-        this.blue_tiles.push({ x: blue_tile.x, y: blue_tile.y - 1 });
-      }
     }
-  },
+
+    this.blue_manager = BLUE_MANAGER.init(blue_tiles);
+    this.blue_manager.grow_blue();
+  }
 
   // This event is triggered every time the player "reborn". As you've seen, is manually called in the last line of "changelevel"
   maingame.newLife=function(up) {
@@ -210,7 +140,7 @@ function go() {
     add_ghost({ id: 2, x: maze.hw - 24, y: maze.hh - 17 });
     add_ghost({ id: 3, x: maze.hw + 4,  y: maze.hh - 20 });
     add_ghost({ id: 4, x: maze.hw + 14, y: maze.hh - 17 });
-    add_plant({ id: 11, x: maze.hw + 14, y: maze.hh - 17 });
+    add_plant({ id: 23, x: maze.hw + 14, y: maze.hh - 17 });
     // maingame.hud.setWidget('plant_label1', { widget: 'label', font: 'small', value: '%', dx: 0, dw: gbox.getScreenW() - 5, dy: gbox.getScreenH() - 55, halign:gbox.ALIGN_RIGHT, clear:true });
     if (this.bonustimer) this.bonustimer=300; // The timer is reset after spawning a new life, if the bouns is not appeared. As I said before, We well talk about this counter at the end.
   }

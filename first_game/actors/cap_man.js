@@ -1,4 +1,3 @@
-var GROW_RATE = 20;
 var CAP_MAN = {
   id:"capman", // Every object has an ID for being picked up every time (we've used the ID into newLife)
   group:"player", // ... and is put in a group (do you remember the setGroups command?)
@@ -32,7 +31,7 @@ var CAP_MAN = {
     });
 
     this.stilltimer = 5;
-    this.grow_timer = GROW_RATE;
+    this.grow_timer = GROW_BLUE_RATE;
   },
 
   first:function() { // Usually everyting involving interacton is into the "first" method.
@@ -50,11 +49,11 @@ var CAP_MAN = {
     }
 
     if (!this.grow_timer) {
-      maingame.grow_blue();
-      this.grow_timer = GROW_RATE;
+      maingame.blue_manager.grow_blue();
+      this.grow_timer = GROW_BLUE_RATE;
     }
 
-    if (!this.killed&&!maingame.gameIsHold()&&!maingame.bullettimer) { // If capman is still alive and the game is not "hold" (level changing fadein/fadeouts etc.) and the "bullet timer" is not stopping the game.
+    if (!this.killed && !maingame.gameIsHold() && !maingame.bullettimer) { // If capman is still alive and the game is not "hold" (level changing fadein/fadeouts etc.) and the "bullet timer" is not stopping the game.
 
       // First of all, let's move.
       var olddata=help.createModel(this,["x","y","accx","accy","xpushing","ypushing","facing"]); // A little trick: capman cannot change direction, if hits a wall, so we backup capman's status here. Will restored if capman hits the wall.
@@ -84,9 +83,9 @@ var CAP_MAN = {
       // So the x position plus half of his width (and the same for y and half height), gives the center of capman (i.e. the mouth)
       // The third argument is the tile map we're checking, that is our maze. 0 is the returned value if the pointed coord is our from the map.
       // All this for picking which tile is in the capman's mouth!
-      if (inmouth>7) { // If capman is eating a pill (8 for normal pill, 9 for power pill)
+      if (any_match([8, 9], inmouth)) { // If capman is eating a pill (8 for normal pill, 9 for power pill)
         if (inmouth == 9) { // If is a powerpill
-          this.scorecombo=1; // Reset the combo counter.
+          this.scorecombo = 1; // Reset the combo counter.
           gbox.getObject("ghosts","ghost1").makeeatable(); // Make the ghosts vulnerable.
           gbox.getObject("ghosts","ghost2").makeeatable();
           gbox.getObject("ghosts","ghost3").makeeatable();
@@ -97,6 +96,10 @@ var CAP_MAN = {
         help.setTileInMap(gbox.getCanvasContext("mazecanvas"),maze,mouthx,mouthy,null); // ... and set a null tile over that.
         maingame.hud.addValue("score","value",10); // Player earns 10 points. "hud" items also stores their values and can be used to store the real score.
         maingame.pillscount--; // Let's decrease the number of pills into the maze.
+      } else if (inmouth == BLUE_TILE) {
+        var mouthx=help.xPixelToTileX(maze,this.x+this.hw);
+        var mouthy=help.yPixelToTileY(maze,this.y+this.hh);
+        help.setTileInMap(gbox.getCanvasContext("mazecanvas"),maze,mouthx,mouthy,BLUE_TILE); // ... and set a null tile over that.
       }
     }
   },
