@@ -19,6 +19,7 @@
     BLUE_PATH = 10;
     BLUE_TILE = 12;
     GHOST_WAIT_TIME = 15;
+    GAME_TIME = 1000;
   </script>
   <script type="text/javascript" src="actors/cap_man.js"></script>
   <script type="text/javascript" src="actors/ghost.js"></script>
@@ -46,14 +47,14 @@ var maze; // The maze array, with pills and walls
 
 // First of all, let's load all the needed resources. Is done on the "onLoad" event of the window.
 window.addEventListener('load', function () {
-  help.akihabaraInit("Forest"); // Akihabara is initialized with title and all the default settings.
+  help.akihabaraInit("The Forest"); // Akihabara is initialized with title and all the default settings.
   gbox.setCallback(go); // the "go" method is registerd as callback: when all the resources are loaded, will be called.
 
   gbox.addImage("cels","resources/capman/cels.png"); // Images are loaded setting an alias and a file name. Can be sprites sheet, like this one...
   gbox.addImage("maze_cels","resources/forest/maze_cels.png"); // Images are loaded setting an alias and a file name. Can be sprites sheet, like this one...
   // gbox.addImage("maze_cels","resources/capman/cels.pn"); // Images are loaded setting an alias and a file name. Can be sprites sheet, like this one...
   gbox.addImage("font","resources/capman/font.png"); // ...or font set.
-  gbox.addImage("logo","resources/forest/logo.png");
+  gbox.addImage("logo","resources/forest/logo3.png");
   gbox.addImage('plants', 'resources/forest/plants2.png');
 
   gbox.addFont({id:"small",image:"font",firstletter:" ",tileh:8,tilew:8,tilerow:255,gapx:0,gapy:0}); // Font are mapped over an image, setting the first letter, the letter size, the length of all rows of letters and a horizontal/vertical gap.
@@ -145,6 +146,8 @@ function go() {
     add_ghost({ id: 1, x: 10, y: 1 });
     add_ghost({ id: 2, x: maze.w - 20, y: 1 });
 
+    this.gametime = GAME_TIME;
+
     // add_plant({ id: 1, x: maze.w - 20, y: maze.hh + 5 }); 
     // add_plant({ id: 2, x: 10, y: maze.hh + 5 });
 
@@ -205,6 +208,10 @@ function go() {
     if (this.bullettimer>0) this.bullettimer--; // ...keep updated the "bullet time" counter...
     if (maingame.pillscount==0) // ...check if the maze is clear...
       maingame.gotoLevel(maingame.level+1); // ...and warp to the next level, if true.
+
+    if (maingame.gametime <= 0) // ...check if the time is up
+      maingame.gotoLevel(maingame.level+1); // you win!
+
     if (this.bonustimer>0) { // If the there is time left, before the bonus needs to be spawned...
       this.bonustimer--; // Decrease the timer
       if (this.bonustimer==0) { // If the time is up...

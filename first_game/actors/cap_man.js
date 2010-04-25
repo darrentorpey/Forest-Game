@@ -43,6 +43,12 @@ var CAP_MAN = {
     PLANT_MANAGER.update();
     BLUE_MANAGER.update();
 
+    if (maingame.gametime > 0)
+      maingame.gametime--;
+
+    maingame.hud.setValue("hiscore","value", maingame.gametime);
+    maingame.hud.redraw();
+
     down_one(this, 'stilltimer');
     down_one(this, 'grow_timer');
     if (this.stilltimer < 0) { this.stilltimer = 0; }

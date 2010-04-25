@@ -27,7 +27,7 @@
 		  			toys.resetToy(this,"default-blinker");
 		  		} else {
 		  			gbox.blitFade(gbox.getBufferContext(),{alpha:1});
-		  			return toys.text.blink(this,"default-blinker",gbox.getBufferContext(),{font:"small",text:"Save the colony!",valign:gbox.ALIGN_MIDDLE,halign:gbox.ALIGN_CENTER,dx:0,dy:0,dw:gbox.getScreenW(),dh:gbox.getScreenH(),blinkspeed:5,times:3});
+		  			return toys.text.blink(this,"default-blinker",gbox.getBufferContext(),{font:"small",text:"Save the forest!",valign:gbox.ALIGN_MIDDLE,halign:gbox.ALIGN_CENTER,dx:0,dy:0,dw:gbox.getScreenW(),dh:gbox.getScreenH(),blinkspeed:5,times:3});
 		  		}
 		 	 },
 		 	 
@@ -73,7 +73,7 @@
 		  		 if (reset) {
 		  			 toys.resetToy(this,"default-blinker");
 		  		} else {
-		  			return toys.text.blink(this,"default-blinker",gbox.getBufferContext(),{font:"small",text:"WELL DONE!",valign:gbox.ALIGN_MIDDLE,halign:gbox.ALIGN_CENTER,dx:0,dy:0,dw:gbox.getScreenW(),dh:gbox.getScreenH(),blinkspeed:5,times:10});
+		  			return toys.text.blink(this,"default-blinker",gbox.getBufferContext(),{font:"small",text:"Forest saved!",valign:gbox.ALIGN_MIDDLE,halign:gbox.ALIGN_CENTER,dx:0,dy:0,dw:gbox.getScreenW(),dh:gbox.getScreenH(),blinkspeed:5,times:10});
 		  		}
 		  	},
 		  	
