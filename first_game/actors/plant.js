@@ -1,3 +1,18 @@
+PLANT_MANAGER = {
+  left_plants: [],
+  right_plants: [],
+
+  left_base: { x: 72, y: 90 - 6 },
+
+  add_left_plant: function() {
+    var id = this.left_plants.length + 1;
+    var x = this.left_base.x + 12 * (id - 1);
+    var y = this.left_base.y;
+    add_plant({ id: id, x: x, y: y });
+    this.left_plants.push({ x: x, y: y });
+  }
+}
+
 function add_plant(data) {
   gbox.addObject({
     id: data.id,
@@ -32,7 +47,7 @@ function add_plant(data) {
     },
 
     first:function() {
-      
+
     },
 
     blit:function() { // In the blit phase, we're going to render the ghost on the screen, just like capman.

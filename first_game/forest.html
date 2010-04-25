@@ -17,6 +17,7 @@
     GROW_BLUE_RATE = 2; // Lower is faster
     BLUE_PATH = 11;
     BLUE_TILE = 12;
+    GHOST_WAIT_TIME = 15;
   </script>
   <script type="text/javascript" src="actors/cap_man.js"></script>
   <script type="text/javascript" src="actors/ghost.js"></script>
@@ -52,7 +53,7 @@ window.addEventListener('load', function () {
   // gbox.addImage("maze_cels","resources/capman/cels.pn"); // Images are loaded setting an alias and a file name. Can be sprites sheet, like this one...
   gbox.addImage("font","resources/capman/font.png"); // ...or font set.
   gbox.addImage("logo","resources/forest/logo.png");
-  gbox.addImage('plants', 'resources/forest/plants.png');
+  gbox.addImage('plants', 'resources/forest/plants2.png');
 
   gbox.addFont({id:"small",image:"font",firstletter:" ",tileh:8,tilew:8,tilerow:255,gapx:0,gapy:0}); // Font are mapped over an image, setting the first letter, the letter size, the length of all rows of letters and a horizontal/vertical gap.
   // Sometime you can find pixel fonts with multiple colors, one per row/block. You can map multiple fonts on the same image, so create many fonts, one for each color.
@@ -66,7 +67,7 @@ window.addEventListener('load', function () {
   gbox.addTiles({ id: "ghosteaten",  image: 'cels',      tileh: 12,  tilew: 12,  tilerow: 3,  gapx: 36*5, gapy: 12 }); // ...and the eaten.
   gbox.addTiles({ id: "bonus",       image: 'cels',      tileh: 12,  tilew: 12,  tilerow: 8,  gapx: 0,    gapy: 24 }); // A row from bonuses...
   gbox.addTiles({ id: "maze",        image: 'maze_cels', tileh: 4,   tilew: 4,   tilerow: 13, gapx: 0,    gapy: 0  }); // The tilesets are taken from the sprite sheet too.
-  gbox.addTiles({ id: 'plant',       image: 'plants',    tileh: 16,  tilew: 12,  tilerow: 1,  gapx: 0,    gapy: 0  }); // The tilesets are taken from the sprite sheet too.
+  gbox.addTiles({ id: 'plant',       image: 'plants',    tileh: 12,  tilew: 12,  tilerow: 1,  gapx: 0,    gapy: 0  }); // The tilesets are taken from the sprite sheet too.
 
   gbox.loadAll(); // When everything is ready, the "loadAll" downloads all the needed resources.
 }, false);
@@ -136,11 +137,19 @@ function go() {
     gbox.purgeGarbage(); // the gbox module have a garbage collector that runs sometime. Let's call this manually, for optimization (and better reinitialization)
     maingame.bullettimer=0; // Reset the bullettimer, so the game can continue normally.
     toys.topview.spawn(gbox.getObject("player","capman"),{x:maze.hw-6,y:maze.hh+50,accx:0,accy:0,xpushing:false,ypushing:false}); // Our "capman" object into the "player" group spawns in the middle of the maze every time it spawns.
-    add_ghost({ id: 1, x: maze.hw - 12, y: maze.hh - 20 });
-    add_ghost({ id: 2, x: maze.hw - 24, y: maze.hh - 17 });
-    add_ghost({ id: 3, x: maze.hw + 4,  y: maze.hh - 20 });
-    add_ghost({ id: 4, x: maze.hw + 14, y: maze.hh - 17 });
-    add_plant({ id: 23, x: maze.hw + 14, y: maze.hh - 17 });
+    add_ghost({ id: 1, x: 10, y: 1 });
+    add_ghost({ id: 2, x: maze.w - 20, y: 1 });
+    add_plant({ id: 1, x: maze.w - 20, y: maze.hh + 5 }); 
+    add_plant({ id: 2, x: 10, y: maze.hh + 5 });
+
+    PLANT_MANAGER.add_left_plant();
+    PLANT_MANAGER.add_left_plant();
+    PLANT_MANAGER.add_left_plant();
+    PLANT_MANAGER.add_left_plant();
+    PLANT_MANAGER.add_left_plant();
+    PLANT_MANAGER.add_left_plant();
+    PLANT_MANAGER.add_left_plant();
+
     // maingame.hud.setWidget('plant_label1', { widget: 'label', font: 'small', value: '%', dx: 0, dw: gbox.getScreenW() - 5, dy: gbox.getScreenH() - 55, halign:gbox.ALIGN_RIGHT, clear:true });
     if (this.bonustimer) this.bonustimer=300; // The timer is reset after spawning a new life, if the bouns is not appeared. As I said before, We well talk about this counter at the end.
   }
