@@ -14,4 +14,10 @@ function any(set, func) {
 function any_match(set, value) {
   return any(set, function (i) { return i == value; });
 }
+
+function invoke(set, func) {
+  for (i in set) {
+    func(set[i]);
+  }
+}
 // var args = arguments;

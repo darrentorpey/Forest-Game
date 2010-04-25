@@ -1,3 +1,5 @@
+BLUE_NEEDED_FOR_PLANT = 20;
+
 var CAP_MAN = {
   id:"capman", // Every object has an ID for being picked up every time (we've used the ID into newLife)
   group:"player", // ... and is put in a group (do you remember the setGroups command?)
@@ -32,10 +34,14 @@ var CAP_MAN = {
 
     this.stilltimer = 5;
     this.grow_timer = GROW_BLUE_RATE;
+    this.blue_power = 0;
   },
 
   first:function() { // Usually everyting involving interacton is into the "first" method.
     this.counter=(this.counter+1)%10; // This line must be used in every object that uses animation. Is needed for getting the right frame (the "frames" block few lines up)
+
+    PLANT_MANAGER.update();
+    BLUE_MANAGER.update();
 
     down_one(this, 'stilltimer');
     down_one(this, 'grow_timer');
@@ -101,9 +107,24 @@ var CAP_MAN = {
         maingame.hud.addValue("score","value",10); // Player earns 10 points. "hud" items also stores their values and can be used to store the real score.
         maingame.pillscount--; // Let's decrease the number of pills into the maze.
       } else if (inmouth == BLUE_TILE) {
+        // Consume BLUE!!!
+
         var mouthx=help.xPixelToTileX(maze,this.x+this.hw);
         var mouthy=help.yPixelToTileY(maze,this.y+this.hh);
-        help.setTileInMap(gbox.getCanvasContext("mazecanvas"),maze,mouthx,mouthy,BLUE_TILE); // ... and set a null tile over that.
+        help.setTileInMap(gbox.getCanvasContext("mazecanvas"),maze,mouthx,mouthy,BLUE_PATH); // ... and set a null tile over that.
+
+        BLUE_MANAGER.remove_tile(mouthx, mouthy);
+
+        // var tile = BLUE_MANAGER.get_tile(mouthx, mouthy);
+        // tile.wait = 20;
+        BLUE_MANAGER.add_wait(mouthx, mouthy);
+
+        this.blue_power++;
+        if (this.blue_power >= BLUE_NEEDED_FOR_PLANT) {
+          PLANT_MANAGER.add_left_plant();
+          this.blue_power -= BLUE_NEEDED_FOR_PLANT;
+          // maze.map[mouthy][mouthx]
+        }
       }
     }
   },

@@ -14,7 +14,8 @@
     // ################
     // GLOBAL VARIABLES
     // ================
-    GROW_BLUE_RATE = 2; // Lower is faster
+    GROW_BLUE_RATE = 5; // Lower is faster
+    BLUE_USED = 10;
     BLUE_PATH = 11;
     BLUE_TILE = 12;
     GHOST_WAIT_TIME = 15;
@@ -135,6 +136,7 @@ function go() {
     gbox.trashGroup("bonus");
     gbox.trashGroup("ghosts");
     PLANT_MANAGER.reset();
+    BLUE_MANAGER.reset();
     gbox.purgeGarbage(); // the gbox module have a garbage collector that runs sometime. Let's call this manually, for optimization (and better reinitialization)
     maingame.bullettimer=0; // Reset the bullettimer, so the game can continue normally.
     toys.topview.spawn(gbox.getObject("player","capman"),{x:maze.hw-6,y:maze.hh+50,accx:0,accy:0,xpushing:false,ypushing:false}); // Our "capman" object into the "player" group spawns in the middle of the maze every time it spawns.
@@ -143,14 +145,6 @@ function go() {
     add_ghost({ id: 2, x: maze.w - 20, y: 1 });
     add_plant({ id: 1, x: maze.w - 20, y: maze.hh + 5 }); 
     add_plant({ id: 2, x: 10, y: maze.hh + 5 });
-
-    PLANT_MANAGER.add_left_plant();
-    PLANT_MANAGER.add_left_plant();
-    PLANT_MANAGER.add_left_plant();
-    PLANT_MANAGER.add_left_plant();
-    PLANT_MANAGER.add_left_plant();
-    PLANT_MANAGER.add_left_plant();
-    PLANT_MANAGER.add_left_plant();
 
     // maingame.hud.setWidget('plant_label1', { widget: 'label', font: 'small', value: '%', dx: 0, dw: gbox.getScreenW() - 5, dy: gbox.getScreenH() - 55, halign:gbox.ALIGN_RIGHT, clear:true });
     if (this.bonustimer) this.bonustimer=300; // The timer is reset after spawning a new life, if the bouns is not appeared. As I said before, We well talk about this counter at the end.

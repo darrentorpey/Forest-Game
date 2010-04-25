@@ -15,6 +15,11 @@ PLANT_MANAGER = {
   reset: function() {
     this.left_plants = [];
     gbox.trashGroup("plants");
+  },
+  
+  update: function() {
+    // if (!this.timeTilPlant)
+    // PLANT_MANAGER.add_left_plant();
   }
 }
 
