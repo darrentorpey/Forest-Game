@@ -1,4 +1,5 @@
 .DS_Store
-*/*.pxi
+*/*/*.pxi
+*/*/*/*.pxi
 akihabara_source
 first_game.tmproj

@@ -241,6 +241,5 @@ function add_ghost(data) {
     blit:function() { // In the blit phase, we're going to render the ghost on the screen, just like capman.
       gbox.blitTile(gbox.getBufferContext(),{tileset:this.tileset,tile:this.frame,dx:this.x,dy:this.y,fliph:this.fliph,flipv:this.flipv,camera:this.camera,alpha:1});
     }
-
   });
 }

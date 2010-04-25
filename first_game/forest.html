@@ -11,6 +11,7 @@
   <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" />
   <script type="text/javascript" src="actors/cap_man.js"></script>
   <script type="text/javascript" src="actors/ghost.js"></script>
+  <script type="text/javascript" src="actors/plant.js"></script>
 </head>
 <body>
 </body>
@@ -37,33 +38,34 @@ window.addEventListener('load', function () {
   gbox.addImage("maze_cels","resources/forest/maze_cels.png"); // Images are loaded setting an alias and a file name. Can be sprites sheet, like this one...
   // gbox.addImage("maze_cels","resources/capman/cels.pn"); // Images are loaded setting an alias and a file name. Can be sprites sheet, like this one...
   gbox.addImage("font","resources/capman/font.png"); // ...or font set.
-  gbox.addImage("logo","resources/forest/logo.png"); // ...or a full image.
+  gbox.addImage("logo","resources/forest/logo.png");
+  gbox.addImage('plants', 'resources/forest/plants.png');
 
   gbox.addFont({id:"small",image:"font",firstletter:" ",tileh:8,tilew:8,tilerow:255,gapx:0,gapy:0}); // Font are mapped over an image, setting the first letter, the letter size, the length of all rows of letters and a horizontal/vertical gap.
   // Sometime you can find pixel fonts with multiple colors, one per row/block. You can map multiple fonts on the same image, so create many fonts, one for each color.
 
-  gbox.addTiles({ id: "capman",     image: 'cels',      tileh: 12, tilew: 12, tilerow: 10, gapx: 0,    gapy: 0  }); // Sprites sheets are cut here, setting the tile size, the number of sprites per row and the gap of the frames set.
-  gbox.addTiles({ id: "ghost1",     image: 'cels',      tileh: 12, tilew: 12, tilerow: 3,  gapx: 0,    gapy: 12 }); // ...the first ghost is in the second row of the sheet
-  gbox.addTiles({ id: "ghost2",     image: 'cels',      tileh: 12, tilew: 12, tilerow: 3,  gapx: 36,   gapy: 12 }); // ...the second is a bit on the right...
-  gbox.addTiles({ id: "ghost3",     image: 'cels',      tileh: 12, tilew: 12, tilerow: 3,  gapx: 36*2, gapy: 12 }); // ...the third one is here...
-  gbox.addTiles({ id: "ghost4",     image: 'cels',      tileh: 12, tilew: 12, tilerow: 3,  gapx: 36*3, gapy: 12 }); // ... and the fourth is here.
-  gbox.addTiles({ id: "ghostscared",image: 'cels',      tileh: 12, tilew: 12, tilerow: 3,  gapx: 36*4, gapy: 12 }); // The scared ghost...
-  gbox.addTiles({ id: "ghosteaten", image: 'cels',      tileh: 12, tilew: 12, tilerow: 3,  gapx: 36*5, gapy: 12 }); // ...and the eaten.
-  gbox.addTiles({ id: "bonus",      image: 'cels',      tileh: 12, tilew: 12, tilerow: 8,  gapx: 0,    gapy: 24 }); // A row from bonuses...
-  gbox.addTiles({ id: "maze",       image: 'maze_cels', tileh: 4,  tilew: 4,  tilerow: 13, gapx: 0,    gapy: 0  }); // The tilesets are taken from the sprite sheet too.
+  gbox.addTiles({ id: "capman",      image: 'cels',      tileh: 12,  tilew: 12,  tilerow: 10, gapx: 0,    gapy: 0  }); // Sprites sheets are cut here, setting the tile size, the number of sprites per row and the gap of the frames set.
+  gbox.addTiles({ id: "ghost1",      image: 'cels',      tileh: 12,  tilew: 12,  tilerow: 3,  gapx: 0,    gapy: 12 }); // ...the first ghost is in the second row of the sheet
+  gbox.addTiles({ id: "ghost2",      image: 'cels',      tileh: 12,  tilew: 12,  tilerow: 3,  gapx: 36,   gapy: 12 }); // ...the second is a bit on the right...
+  gbox.addTiles({ id: "ghost3",      image: 'cels',      tileh: 12,  tilew: 12,  tilerow: 3,  gapx: 36*2, gapy: 12 }); // ...the third one is here...
+  gbox.addTiles({ id: "ghost4",      image: 'cels',      tileh: 12,  tilew: 12,  tilerow: 3,  gapx: 36*3, gapy: 12 }); // ... and the fourth is here.
+  gbox.addTiles({ id: "ghostscared", image: 'cels',      tileh: 12,  tilew: 12,  tilerow: 3,  gapx: 36*4, gapy: 12 }); // The scared ghost...
+  gbox.addTiles({ id: "ghosteaten",  image: 'cels',      tileh: 12,  tilew: 12,  tilerow: 3,  gapx: 36*5, gapy: 12 }); // ...and the eaten.
+  gbox.addTiles({ id: "bonus",       image: 'cels',      tileh: 12,  tilew: 12,  tilerow: 8,  gapx: 0,    gapy: 24 }); // A row from bonuses...
+  gbox.addTiles({ id: "maze",        image: 'maze_cels', tileh: 4,   tilew: 4,   tilerow: 13, gapx: 0,    gapy: 0  }); // The tilesets are taken from the sprite sheet too.
+  gbox.addTiles({ id: 'plant',       image: 'plants',    tileh: 16,  tilew: 12,  tilerow: 1,  gapx: 0,    gapy: 0  }); // The tilesets are taken from the sprite sheet too.
 
   gbox.loadAll(); // When everything is ready, the "loadAll" downloads all the needed resources.
-
 }, false);
 
 // This is our "go" function we've register and will be called after all the resources are ready. i.e. gfx are loaded, tilesets and fonts are available
 function go() {
   // The very first thing to do is to set which groups will be involved in the game. Groups can be used for grouped collision detection and for rendering order
-  gbox.setGroups(["background","player","ghosts","bonus","sparks","gamecycle"]); // Usually the background is the last thing rendered. The last thing is "gamecycle", that means games messages, like "gameover", menus etc.
+  gbox.setGroups(["background","player","ghosts","bonus", 'plants', 'plants_labels', "sparks","gamecycle"]); // Usually the background is the last thing rendered. The last thing is "gamecycle", that means games messages, like "gameover", menus etc.
 
-  maingame=gamecycle.createMaingame("gamecycle","gamecycle"); // We create a new maingame into the "gamecycle" group. Will be called "gamecycle". From now, we've to "override" some of the maingame default actions.
+  maingame = gamecycle.createMaingame("gamecycle","gamecycle"); // We create a new maingame into the "gamecycle" group. Will be called "gamecycle". From now, we've to "override" some of the maingame default actions.
 
-  maingame.bullettimer=0; // Maingame is a javascript object, so it can host any kind of variable, like our "bullet timer". Keeps the game still for a while, that happens when eating a ghost or when being eated ;)
+  maingame.bullettimer = 0; // Maingame is a javascript object, so it can host any kind of variable, like our "bullet timer". Keeps the game still for a while, that happens when eating a ghost or when being eated ;)
 
   if (gbox.dataLoad("capman-hiscore")===null) // We will keep the highscores too. So, if there is any highscore saved...
     gbox.dataSave("capman-hiscore",100); // ... we will put a "100 points" hiscore.
@@ -127,13 +129,13 @@ function go() {
       "||||                                                  ||xx||                                                  ||||",
       "||||   .  T------------T   .  T----------------T   .  ||xx||   .  T----------------T   .  T------------T   .  ||||",
       "||||      ||xxxxxxxxxx||      ||xxxxxxxxxxxxxx||      ||xx||      ||xxxxxxxxxxxxxx||      ||xxxxxxxxxx||      ||||",
-      "||||   .  L--------Txx||   .  L----------------J   .  L----J   .  L----------------J   .  ||xxT--------J   .  ||||",
-      "||||              ||xx||                                                                  ||xx||              ||||",
-      "||||   o   .   .  ||xx||   .                                                           .  ||xx||   .   .   o  ||||",
-      "||||              ||xx||                                                                  ||xx||              ||||",
-      "||L--------T   .  ||xx||   .  T----T   .  T----------------------------T   .  T----T   .  ||xx||   .  T--------J||",
-      "||xxxxxxxx||      ||xx||      ||xx||      ||xxxxxxxxxxxxxxxxxxxxxxxxxx||      ||xx||      ||xx||      ||xxxxxxxx||",
-      "||T--------J   .  L----J   .  ||xx||   .  L------------TxxT------------J   .  ||xx||   .  L----J   .  L--------T||",
+      "||||   .  L--------Txx||   .  L----------------J   .  L----J   .  L----------------J  >>  ||xxT--------J   .  ||||",
+      "||||              ||xx||                                                              >>  ||xx||              ||||",
+      "||||   o   .   .  ||xx||   .                                              >>>>>>>>>>>>>>  ||xx||   .   .   o  ||||",
+      "||||              ||xx||                                                  >>          >>  ||xx||              ||||",
+      "||L--------T   .  ||xx||   .  T----T   .  T----------------------------T  >>  T----T  >>  ||xx||   .  T--------J||",
+      "||xxxxxxxx||      ||xx||      ||xx||      ||xxxxxxxxxxxxxxxxxxxxxxxxxx||  >>  ||xx||      ||xx||      ||xxxxxxxx||",
+      "||T--------J   .  L----J   .  ||xx||   .  L------------TxxT------------J  >>  ||xx||   .  L----J   .  L--------T||",
       "||||                          ||xx||                  ||xx||                  ||xx||                          ||||",
       "||||   .   .   .   .   .   .  ||xx||   .   .   .   .  ||xx||  BBBBBBBBBBBBBB  ||xx||   .   .   .   .   .   .  ||||",
       "||||                          ||xx||                  L----J  BB              ||xx||                          ||||",
@@ -145,26 +147,56 @@ function go() {
       "||||                                                  ||xx||                                                  ||||",
       "||L----------------------------------------------------JxxL----------------------------------------------------J||",
 
-      ],[[null,"  "],[0,"||"],[1,"--"],[2,"L-"],[3,"-J"],[4,"T-"],[5,"-T"],[6,"~~"],[7,"xx"],[8," ."],[9," o"],[10, "=="],[11, "BB"]]), // ...this array as palette. Don't you think that a map like this is quite easy to edit and read with your on-the-go text editor?
+      ],[[null,"  "],[0,"||"],[1,"--"],[2,"L-"],[3,"-J"],[4,"T-"],[5,"-T"],[6,"~~"],[7,"xx"],[8," ."],[9," o"],[10, "=="],[11, "BB"],[12, " +"],[13, ">>"]]), // ...this array as palette. Don't you think that a map like this is quite easy to edit and read with your on-the-go text editor?
       tileIsSolid:function(obj,t) { // This function have to return true if the object "obj" is checking if the tile "t" is a wall, so...
           return (t!==null)&& // Is a wall if is not an empty space and...
               ((t<6)||    // Is a piece of wall or...
               ((t==6)&&(obj.status!="goout")&&(obj.status!="goin"))); // The ghost's door (only if is not a ghost that is trying to go out or in)
       }
     });
+
     gbox.createCanvas("mazecanvas",{w:maze.w,h:maze.h}); // Since finalizeMap have calculated the real height and width, we can create a canvas that fits perfectly our maze... Let's call it "mazecanvas".
     gbox.blitTilemap(gbox.getCanvasContext("mazecanvas"),maze); // Let's paste the maze map in the "maze" object into the just created "mazecanvas". So is now ready to be rendered.
     // Then, we need to count the number of pills to eat... quite crucial, to define when the maze was cleared. Since we're lazy, we're going to cycle the map and increase a counter instead of counting them by hand.
     this.pillscount=0; // Yes. We're creating a custom counter into the "maingame" object. You can call this dirty. I call this flexibility. And relax :)
-    for (var y=0;y<maze.map.length;y++) // Let's iterate all the rows...
-      for (var x=0;x<maze.map[y].length;x++) // ... and all the colums
-        if (maze.map[y][x]>7) this.pillscount++; // If the row/column contains a "pill" tile (8 for plain pill, 9 for powerpill), let's increase our counter by one.
-    // So now we know how many pills are in the maze.
 
-    this.bonustimer=300; // We reset another timer. This counter is used to check when is the time to spawn a bonus in the middle of the maze. We will talk about this at last.
+    this.bonustimer = 300; // We reset another timer. This counter is used to check when is the time to spawn a bonus in the middle of the maze. We will talk about this at last.
 
     this.newLife(); // We will call the local "newLife" method, since this came displaces enemies and player every new level. Do you remember this in capman? ;)
+
+    // for (var i=0;i<gbox._tiles[maze.tileset].length;i++) {
+    //   var tile = gbox._titles[i];
+    //   console.log(tile);
+    //   if (tile) {
+    //
+    //   }
+    // }
+
+    this.blue_tiles = [];
+    for (var y=0;y<maze.map.length;y++) // Let's iterate all the rows...
+      for (var x=0;x<maze.map[y].length;x++) { // ... and all the colums
+        if (maze.map[y][x]>7) this.pillscount++; // If the row/column contains a "pill" tile (8 for plain pill, 9 for powerpill), let's increase our counter by one.
+        // console.log(maze.map[y][x]);
+        if (maze.map[y][x] == 11) {
+          this.blue_tiles.push({ x: x, y: y });
+        }
+      }
+    // So now we know how many pills are in the maze.
+    this.grow_blue();
   }
+
+  maingame.grow_blue = function() {
+    for (tile in this.blue_tiles) {
+      var blue_tile = this.blue_tiles[tile];
+      var grow_candidate = maze.map[blue_tile.y - 2][blue_tile.x] == 13;
+      // console.log(good);
+      if (grow_candidate) {
+        // maze.map[blue_tile.y - 1][blue_tile.x] = 11;
+        help.setTileInMap(gbox.getCanvasContext("mazecanvas"), maze, blue_tile.x, blue_tile.y - 1, 11); // ... and set a null tile over that.
+        this.blue_tiles.push({ x: blue_tile.x, y: blue_tile.y - 1 });
+      }
+    }
+  },
 
   // This event is triggered every time the player "reborn". As you've seen, is manually called in the last line of "changelevel"
   maingame.newLife=function(up) {
@@ -179,6 +211,9 @@ function go() {
     add_ghost({ id: 2, x: maze.hw - 24, y: maze.hh - 17 });
     add_ghost({ id: 3, x: maze.hw + 4,  y: maze.hh - 20 });
     add_ghost({ id: 4, x: maze.hw + 14, y: maze.hh - 17 });
+    add_plant({ id: 11, x: maze.hw + 14, y: maze.hh - 17 });
+    // maingame.hud.setWidget('pla
+    nt_label1', { widget: 'label', font: 'small', value: '%', dx: 0, dw: gbox.getScreenW() - 5, dy: gbox.getScreenH() - 55, halign:gbox.ALIGN_RIGHT, clear:true });
     if (this.bonustimer) this.bonustimer=300; // The timer is reset after spawning a new life, if the bouns is not appeared. As I said before, We well talk about this counter at the end.
   }
 
@@ -196,6 +231,8 @@ function go() {
     maingame.hud.setWidget("lives",{widget:"symbols",minvalue:0,value:3-maingame.difficulty,maxshown:3,tileset:"capman",tiles:[5],dx:240,dy:70,gapx:16,gapy:0}); // The classic life indicator, with repated capman symbols. Note the "difficulty usage" ;)
     maingame.hud.setWidget("bonus",{widget:"stack",rightalign:true,tileset:"bonus",dx:gbox.getScreenW()-5,dy:gbox.getScreenH()-34,gapx:12,gapy:0,maxshown:8,value:[]}); // The bonus queue: is the "history" of the picked up bonuses, on the lower right corner, aligned to the right. Starts with an empty array. gapx and gapy is the distance between symbols
     maingame.hud.setWidget("stage",{widget:"label",font:"small",value:"",dx:0,dw:gbox.getScreenW()-5,dy:gbox.getScreenH()-13,halign:gbox.ALIGN_RIGHT,clear:true}); // The label with the stage name (low creativity: STAGE 1, STAGE 2 etc). Is empty for now, will be filled when a new level starts.
+
+    // maingame.hud.setWidget('plant_label1', { widget: 'label', font: 'small', value: '1', dx: 0, dw: gbox.getScreenW() - 5, dy: gbox.getScreenH() - 25, halign:gbox.ALIGN_RIGHT, clear:true });
 
     maingame.hud.setValue("hiscore","value",gbox.dataLoad("capman-hiscore")); // setValue is used to set parametes on hud. So, well, we're setting the "hiscore value" to the loaded data "capman-hiscore" that contains the latest hiscore.
 
@@ -215,10 +252,6 @@ function go() {
     // Now, let's add our capman. The player is usually added once per match and "moved" in the map on level changes (as you've seen into the newLife method)
     gbox.addObject(CAP_MAN);
   }
-
-  // Now is the time to explain how to create a generator.
-  // Is nothing but a new method of maingame that generate an object at given position.
-  maingame.addGhost=function(data) { add_ghost(data); }
 
   // Some final touch to the maingame object...
   maingame.gameIsOver=function() { // This method is called by maingame itself to check if the game is over or not. So...

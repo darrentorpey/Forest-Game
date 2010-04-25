@@ -1,3 +1,4 @@
+var GROW_RATE = 20;
 var CAP_MAN = {
   id:"capman", // Every object has an ID for being picked up every time (we've used the ID into newLife)
   group:"player", // ... and is put in a group (do you remember the setGroups command?)
@@ -31,19 +32,26 @@ var CAP_MAN = {
     });
 
     this.stilltimer = 5;
+    this.grow_timer = GROW_RATE;
   },
 
   first:function() { // Usually everyting involving interacton is into the "first" method.
     this.counter=(this.counter+1)%10; // This line must be used in every object that uses animation. Is needed for getting the right frame (the "frames" block few lines up)
 
-    if (this.stilltimer) this.stilltimer--;
+    down_one(this, 'stilltimer');
+    down_one(this, 'grow_timer');
     if (this.stilltimer < 0) { this.stilltimer = 0; }
 
-    if (!this.did_it_once && !this.stilltimer && !this.isPaused && !maingame.gameIsHold()) {
+    if (!this.stilltimer && !this.isPaused && !maingame.gameIsHold()) {
       if (gbox.keyIsHit("a")) {
         maingame.addBonus({ bonusid: maingame.hud.getValue('bonus', 'value').length });
         this.stilltimer = 5;
       }
+    }
+
+    if (!this.grow_timer) {
+      maingame.grow_blue();
+      this.grow_timer = GROW_RATE;
     }
 
     if (!this.killed&&!maingame.gameIsHold()&&!maingame.bullettimer) { // If capman is still alive and the game is not "hold" (level changing fadein/fadeouts etc.) and the "bullet timer" is not stopping the game.
@@ -72,9 +80,10 @@ var CAP_MAN = {
 
       // Then... let's eat!
       var inmouth=help.getTileInMap(this.x+this.hw,this.y+this.hh,maze,0); // I'll explain this the next line.
-      // getTileInMap returns the tile in the specified coord in pixel. So the x position plus half of his width (and the same for y and half height), gives the center of capman (i.e. the mouth)
-      // The third argument is the tile map we're checking, that is our maze. 0 is the returned value if the pointed coord is our from the map. All this for picking which tile is in the
-      // capman's mouth!
+      // getTileInMap returns the tile in the specified coord in pixel.
+      // So the x position plus half of his width (and the same for y and half height), gives the center of capman (i.e. the mouth)
+      // The third argument is the tile map we're checking, that is our maze. 0 is the returned value if the pointed coord is our from the map.
+      // All this for picking which tile is in the capman's mouth!
       if (inmouth>7) { // If capman is eating a pill (8 for normal pill, 9 for power pill)
         if (inmouth == 9) { // If is a powerpill
           this.scorecombo=1; // Reset the combo counter.
@@ -114,4 +123,8 @@ var CAP_MAN = {
       // the killed attribute. The "spark.simple" method spawns a spark in the same position of the object in the first argument.
     }
   }
+}
+
+function down_one(obj, prop_name) {
+  if (obj[prop_name]) obj[prop_name] -= 1;
 }
