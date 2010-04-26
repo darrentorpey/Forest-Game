@@ -219,7 +219,7 @@ function add_ghost(data) {
         var plant = gbox.getObject("plants","1");
         var plants = gbox._objects['plants'];
         if (this.status=="chase" && this != ghost2 && gbox.collides(this, ghost2)) {
-          console.log("HIT!");
+          // console.log("HIT!");
           maingame.bullettimer=10; // ...stop the game for a while.
           capman.kill(); // ...kill capman. "kill" is the custom method we've created into the capman object.
         // } else if (this.status == 'chase' && gbox.collides(this, plant)) {

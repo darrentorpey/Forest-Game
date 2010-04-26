@@ -67,7 +67,7 @@ BLUE_MANAGER = {
 
       var ttile = BLUE_MANAGER.get_tile(blue_tile.x, blue_tile.y);
       if (ttile.wait) { 
-        console.log("waiting");
+        // console.log("waiting");
         continue;
       }
 
